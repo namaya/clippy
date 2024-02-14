@@ -7,9 +7,6 @@ project(Clippy
         LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Install dependencies
 
 include(FetchContent)
@@ -26,6 +23,10 @@ FetchContent_MakeAvailable(argparse)
 include_directories(../.cvenv/include)
 link_directories(../.cvenv/lib)
 
-add_executable(Clippy main.cpp)
+# Build main executable
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(Clippy main.cpp pdfparser.cpp)
 
 target_link_libraries(Clippy argparse poppler-cpp)
