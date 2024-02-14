@@ -9,7 +9,17 @@ project(Clippy
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 
-# Create target "ChatUpServer"
+include(FetchContent)
+
+FetchContent_Declare(
+    argparse
+    GIT_REPOSITORY https://github.com/p-ranav/argparse.git
+    GIT_TAG v3.0
+)
+
+FetchContent_MakeAvailable(argparse)
+
 add_executable(Clippy main.cpp)
+
+target_link_libraries(Clippy argparse)
