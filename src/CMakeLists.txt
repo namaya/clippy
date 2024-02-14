@@ -10,6 +10,8 @@ project(Clippy
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Install dependencies
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -20,6 +22,10 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(argparse)
 
+
+include_directories(../.cvenv/include)
+link_directories(../.cvenv/lib)
+
 add_executable(Clippy main.cpp)
 
-target_link_libraries(Clippy argparse)
+target_link_libraries(Clippy argparse poppler-cpp)
