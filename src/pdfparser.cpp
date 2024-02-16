@@ -8,11 +8,13 @@
 
 #include "pdfparser.h"
 
+using namespace clippy;
+
 PdfParser::PdfParser() {}
 
 PdfParser::~PdfParser() {}
 
-void PdfParser::parse(std::filesystem::path path) {
+std::filesystem::path PdfParser::parse(std::filesystem::path path) {
   auto doc = std::unique_ptr<poppler::document>{
       poppler::document::load_from_file(path.string())};
 
@@ -39,4 +41,6 @@ void PdfParser::parse(std::filesystem::path path) {
 
     img.save("page-" + std::to_string(i) + ".png", "png");
   }
+
+  return path;
 }

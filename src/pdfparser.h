@@ -4,9 +4,11 @@
 #include <filesystem>
 #include <iostream>
 
+namespace clippy {
 class PdfParser {
 public:
   PdfParser();
   ~PdfParser();
-  void parse(std::filesystem::path path);
+  std::filesystem::path parse(std::filesystem::path path);
 };
+} // namespace clippy

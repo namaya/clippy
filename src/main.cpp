@@ -4,6 +4,7 @@
 
 #include <argparse/argparse.hpp>
 
+#include "ocrtask.h"
 #include "pdfparser.h"
 
 int main(int argc, char *argv[]) {
@@ -31,12 +32,14 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  auto parser = PdfParser{};
+  auto parser = clippy::PdfParser{};
+  auto ocrtask = clippy::OcrTask{};
 
-  for (const auto &entry : std::filesystem::directory_iterator(library_path)) {
+  for (const auto &entry : std::filesystem::directory_iterator{library_path}) {
     if (entry.is_regular_file()) {
       if (entry.path().extension().string() == ".pdf") {
-        parser.parse(entry.path());
+        auto tempPath = parser.parse(entry.path());
+        ocrtask.run(tempPath);
       }
     }
   }
