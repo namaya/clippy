@@ -3,9 +3,34 @@
 #include <iostream>
 
 #include <argparse/argparse.hpp>
+#include <fswatch/c++/monitor_factory.hpp>
 
 #include "ocrtask.h"
 #include "pdfparser.h"
+
+void process_event(const std::vector<fsw::event> &events, void *context) {
+  for (const auto &event : events) {
+    auto path = std::filesystem::path{event.get_path()};
+    std::cout << "Path '" << path << "' was changed at '" << event.get_time()
+              << "'\n";
+
+    if (path.extension().string() == ".pdf") {
+      // process file
+    }
+  }
+
+  // auto parser = clippy::PdfParser{};
+  // auto ocrtask = clippy::OcrTask{};
+  // for (const auto &entry : std::filesystem::directory_iterator{library_path})
+  // {
+  //   if (entry.is_regular_file()) {
+  //     if (entry.path().extension().string() == ".pdf") {
+  //       auto tempPath = parser.parse(entry.path());
+  //       ocrtask.run(tempPath);
+  //     }
+  //   }
+  // }
+}
 
 int main(int argc, char *argv[]) {
   argparse::ArgumentParser program{"clippy"};
@@ -32,17 +57,13 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  auto parser = clippy::PdfParser{};
-  auto ocrtask = clippy::OcrTask{};
+  std::vector<std::string> paths{library_path.string()};
 
-  for (const auto &entry : std::filesystem::directory_iterator{library_path}) {
-    if (entry.is_regular_file()) {
-      if (entry.path().extension().string() == ".pdf") {
-        auto tempPath = parser.parse(entry.path());
-        ocrtask.run(tempPath);
-      }
-    }
-  }
+  auto monitor = fsw::monitor_factory::create_monitor(
+      fsw_monitor_type::system_default_monitor_type, paths, process_event,
+      nullptr);
+
+  monitor->start();
 
   return 0;
 }

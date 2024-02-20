@@ -18,7 +18,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(argparse)
 
-
 include_directories(../.cvenv/include)
 link_directories(../.cvenv/lib)
 
@@ -34,4 +33,11 @@ add_executable(
     ocrtask.cpp
 )
 
-target_link_libraries(Clippy argparse poppler-cpp tesseract leptonica.6)
+target_link_libraries(
+    Clippy
+    argparse
+    fswatch.13
+    poppler-cpp
+    tesseract
+    leptonica.6
+)
