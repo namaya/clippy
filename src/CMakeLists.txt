@@ -8,7 +8,6 @@ project(Clippy
 )
 
 # Install dependencies
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -26,7 +25,13 @@ link_directories(../.cvenv/lib)
 # Build main executable
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-add_executable(Clippy main.cpp pdfparser.cpp)
+add_executable(
+    Clippy
+    main.cpp
+    pdfparser.cpp
+    ocrtask.cpp
+)
 
-target_link_libraries(Clippy argparse poppler-cpp)
+target_link_libraries(Clippy argparse poppler-cpp tesseract leptonica.6)
