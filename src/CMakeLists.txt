@@ -7,17 +7,17 @@ project(Clippy
         LANGUAGES CXX
 )
 
-# Install dependencies
-include(FetchContent)
+#
+#   Link pre-installed third-party dependencies
+#
 
-FetchContent_Declare(
-    argparse
-    GIT_REPOSITORY https://github.com/p-ranav/argparse.git
-    GIT_TAG v3.0
-)
+# Link pre-installed dependencies (if dependency supports CMake packages)
+set(CMAKE_PREFIX_PATH ../.cvenv)
 
-FetchContent_MakeAvailable(argparse)
+find_package(OpenCV CONFIG REQUIRED)
+find_package(argparse CONFIG REQUIRED)
 
+# otherwise directly link and include dependency header and library files
 include_directories(../.cvenv/include)
 link_directories(../.cvenv/lib)
 
@@ -29,15 +29,17 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 add_executable(
     Clippy
     main.cpp
-    pdfparser.cpp
+    pdfextract.cpp
     ocrtask.cpp
 )
 
 target_link_libraries(
     Clippy
-    argparse
+    PRIVATE
+    argparse::argparse
     fswatch.13
     poppler-cpp
     tesseract
     leptonica.6
+    ${OpenCV_LIBS}
 )

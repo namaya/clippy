@@ -2,12 +2,13 @@
 #pragma once
 
 #include <filesystem>
+#include <opencv2/core/mat.hpp>
 
 namespace clippy {
 class OcrTask {
 public:
   OcrTask();
   ~OcrTask();
-  void run(std::filesystem::path path);
+  void recognize(std::vector<cv::Mat> images);
 };
 } // namespace clippy

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <leptonica/allheaders.h>
 #include <leptonica/pix_internal.h>
+#include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
 
 #include "ocrtask.h"
@@ -11,69 +12,86 @@ using namespace clippy;
 OcrTask::OcrTask() {}
 OcrTask::~OcrTask() {}
 
-void OcrTask::run(std::filesystem::path path) {
+void OcrTask::recognize(std::vector<cv::Mat> images) {
+  std::cout << "Recognizing " << images.size() << " images\n";
 
-  // path = "page-1.png";
-  path = "page-0.png";
+  // auto test = cv::Mat{};
 
-  auto ocr =
-      std::unique_ptr<tesseract::TessBaseAPI>{new tesseract::TessBaseAPI{}};
+  // cv::cvtColor(images[0], test, cv::COLOR_RGBA2BGR);
+  // cv::imwrite("page-n0.png", images[0]);
 
-  if (ocr->Init(nullptr, "eng", tesseract::OEM_LSTM_ONLY)) {
-    std::cerr << "Failed to initialize tesseract\n";
-    return;
-  }
+  std::cout << "Done.\n";
 
-  auto image = pixRead(path.string().c_str());
-  if (!image) {
-    std::cerr << "Failed to read image\n";
-    return;
-  }
+  // auto ocr =
+  //     std::unique_ptr<tesseract::TessBaseAPI>{new tesseract::TessBaseAPI{}};
 
-  ocr->SetImage(image);
-  ocr->SetPageSegMode(tesseract::PSM_AUTO);
+  // if (ocr->Init(nullptr, "eng", tesseract::OEM_LSTM_ONLY)) {
+  //   std::cerr << "Failed to initialize tesseract\n";
+  //   return;
+  // }
 
-  // auto outText = ocr->GetUTF8Text();
+  // for (const auto &image : images) {
+  //   auto pix = pixRead(image.string().c_str());
+  //   if (!pix) {
+  //     std::cerr << "Failed to read image\n";
+  //     continue;
+  //   }
 
-  // std::cout << "OCR output: " << outText << "\n";
+  //   ocr->SetImage(pix);
+  //   ocr->SetPageSegMode(tesseract::PSM_AUTO);
 
-  // auto iter = ocr->GetIterator();
+  //   auto outText = ocr->GetUTF8Text();
 
-  // do {
-  //   auto text = iter->GetUTF8Text(tesseract::RIL_BLOCK);
-  //   auto conf = iter->Confidence(tesseract::RIL_BLOCK);
-  //   int x1, y1, x2, y2;
-  //   iter->BoundingBox(tesseract::RIL_BLOCK, &x1, &y1, &x2, &y2);
+  //   std::cout << "OCR output: " << outText << "\n";
 
-  //   std::cout << "text: " << text << " confidence: " << conf
-  //             << " BoundingBox: " << x1 << " " << y1 << " " << x2 << " " <<
-  //             y2
-  //             << "\n";
-  // } while (iter->Next(tesseract::RIL_BLOCK));
+  //   pixDestroy(&pix);
+  // }
 
-  ocr->Recognize(nullptr);
+  // ocr->SetImage(image);
+  // ocr->SetPageSegMode(tesseract::PSM_AUTO);
 
-  // auto boxes = std::unique_ptr<Boxa>{
-  //     ocr->GetComponentImages(tesseract::RIL_TEXTLINE, true, nullptr,
-  //     nullptr)};
-  auto boxes = std::unique_ptr<Boxa>{ocr->GetRegions(nullptr)};
+  // // auto outText = ocr->GetUTF8Text();
 
-  std::cout << "Found " << boxes->n << " text blocks\n";
+  // // std::cout << "OCR output: " << outText << "\n";
 
-  for (auto i = 0; i < boxes->n; i++) {
-    auto box = boxaGetBox(boxes.get(), i, L_CLONE);
+  // // auto iter = ocr->GetIterator();
 
-    ocr->SetRectangle(box->x, box->y, box->w, box->h);
-    auto outText = std::unique_ptr<char[]>{ocr->GetUTF8Text()};
-    auto confidence = ocr->MeanTextConf();
+  // // do {
+  // //   auto text = iter->GetUTF8Text(tesseract::RIL_BLOCK);
+  // //   auto conf = iter->Confidence(tesseract::RIL_BLOCK);
+  // //   int x1, y1, x2, y2;
+  // //   iter->BoundingBox(tesseract::RIL_BLOCK, &x1, &y1, &x2, &y2);
 
-    std::cout << "Box " << i << ":\n";
-    std::cout << "x: " << box->x << " y: " << box->y << " w: " << box->w
-              << " h: " << box->h << "\n";
-    std::cout << "confidence: " << confidence << "\n";
-    std::cout << "OCR output: " << outText << "\n";
-  }
+  // //   std::cout << "text: " << text << " confidence: " << conf
+  // //             << " BoundingBox: " << x1 << " " << y1 << " " << x2 << " "
+  // <<
+  // //             y2
+  // //             << "\n";
+  // // } while (iter->Next(tesseract::RIL_BLOCK));
 
-  pixDestroy(&image);
-  ocr->End();
+  // ocr->Recognize(nullptr);
+
+  // // auto boxes = std::unique_ptr<Boxa>{
+  // //     ocr->GetComponentImages(tesseract::RIL_TEXTLINE, true, nullptr,
+  // //     nullptr)};
+  // auto boxes = std::unique_ptr<Boxa>{ocr->GetRegions(nullptr)};
+
+  // std::cout << "Found " << boxes->n << " text blocks\n";
+
+  // for (auto i = 0; i < boxes->n; i++) {
+  //   auto box = boxaGetBox(boxes.get(), i, L_CLONE);
+
+  //   ocr->SetRectangle(box->x, box->y, box->w, box->h);
+  //   auto outText = std::unique_ptr<char[]>{ocr->GetUTF8Text()};
+  //   auto confidence = ocr->MeanTextConf();
+
+  //   std::cout << "Box " << i << ":\n";
+  //   std::cout << "x: " << box->x << " y: " << box->y << " w: " << box->w
+  //             << " h: " << box->h << "\n";
+  //   std::cout << "confidence: " << confidence << "\n";
+  //   std::cout << "OCR output: " << outText << "\n";
+  // }
+
+  // pixDestroy(&image);
+  // ocr->End();
 }
