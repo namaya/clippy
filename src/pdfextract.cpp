@@ -52,8 +52,6 @@ std::vector<cv::Mat> PdfExtract::extract(std::filesystem::path path) {
 
     images.push_back(cvimg);
 
-    cv::imwrite("page-n" + std::to_string(i) + ".png", cvimg);
-
     if (i == 10) {
       break;
     }
