@@ -16,6 +16,7 @@ set(CMAKE_PREFIX_PATH ../.cvenv)
 
 find_package(OpenCV CONFIG REQUIRED)
 find_package(argparse CONFIG REQUIRED)
+find_package(Llama CONFIG REQUIRED)
 
 # otherwise directly link and include dependency header and library files
 include_directories(../.cvenv/include)
@@ -37,6 +38,7 @@ target_link_libraries(
     Clippy
     PRIVATE
     argparse::argparse
+    llama
     fswatch.13
     poppler-cpp
     tesseract
