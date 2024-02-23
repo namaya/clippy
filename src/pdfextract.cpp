@@ -47,9 +47,8 @@ std::vector<cv::Mat> PdfExtract::extract(std::filesystem::path path) {
       continue;
     }
 
-    auto cvimg = cv::Mat{img.height(), img.width(), CV_8UC3, img.data()};
-
-    std::cout << "Converted to OpenCV image " << i << "\n";
+    auto cvimg = cv::Mat{img.height(), img.width(), CV_8UC3, img.data(),
+                         (size_t)img.bytes_per_row()};
 
     images.push_back(cvimg);
 
